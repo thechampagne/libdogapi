@@ -32,7 +32,7 @@ typedef struct {
 
 extern int dogapi_breeds_list(dogapi_breeds_list_t* dogapi_breeds_list);
 
-extern size_t* dogapi_images_by_breed(const char* breed, size_t* length);
+extern char** dogapi_images_by_breed(const char* breed, size_t* length);
 
 extern char** dogapi_images_by_sub_breed(const char* breed, const char* sub_breed, size_t* length);
 
