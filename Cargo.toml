@@ -1,0 +1,19 @@
+[package]
+name = "dogapi"
+version = "1.0.0"
+description = "Dog API client for C"
+authors = ["XXIV"]
+homepage = "https://github.com/thechampagne/libdogapi"
+repository = "https://github.com/thechampagne/libdogapi"
+readme = "README.md"
+license = "Apache-2.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+name = "dogapi"
+crate-type =["cdylib","staticlib"]
+
+[dependencies]
+dogapi = "1.0.0"
