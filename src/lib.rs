@@ -303,3 +303,150 @@ unsafe extern "C" fn dogapi_breeds_list_free(ptr: *mut dogapi_breeds_list_t) {
     Vec::from_raw_parts((*ptr).values_length, (*ptr).length, (*ptr).length);
   }
 }
+
+#[cfg(test)]
+mod tests {
+  use crate::*;
+  use std::os::raw::c_char;
+  use std::ffi::CStr;
+  use std::slice;
+
+  #[test]
+  fn dogapi_breeds_list_test() {
+    unsafe {
+      let mut list = dogapi_breeds_list_t{
+        length: 0,
+        values_length: 0 as *mut usize,
+        keys: 0 as *mut *mut c_char,
+        values: 0 as *mut *mut *mut c_char
+      };
+      dogapi_breeds_list(&mut list as *mut dogapi_breeds_list_t);
+        let keys = slice::from_raw_parts(list.keys, list.length);
+        for &i in keys {
+          if !i.is_null() {
+            println!("Key: {}", CStr::from_ptr(i).to_str().unwrap());
+          }
+        }
+        let values = slice::from_raw_parts(list.values, list.length);
+        let values_length = slice::from_raw_parts(list.values_length, list.length);
+        let mut i = 0;
+        for &v in values {
+          if !v.is_null() {
+            let value = slice::from_raw_parts(v, values_length[i]);
+            for &val in value {
+              if !val.is_null() {
+                println!("Value: {}", CStr::from_ptr(val).to_str().unwrap());
+              }
+            }
+          }
+          i += 1;
+        }
+        dogapi_breeds_list_free(&mut list as *mut dogapi_breeds_list_t);
+    }
+  }
+
+  #[test]
+  fn dogapi_images_by_breed_test() {
+    unsafe {
+      let mut length = 0;
+      let array = dogapi_images_by_breed("hound\0".as_ptr() as *const i8, &mut length);
+      let slice = slice::from_raw_parts(array, length);
+      for i in slice {
+        println!("{}", CStr::from_ptr(*i).to_str().unwrap());
+      }
+      dogapi_array_free(array, length);
+    }
+  }
+
+  #[test]
+  fn dogapi_images_by_sub_breed_test() {
+    unsafe {
+      let mut length = 0;
+      let array = dogapi_images_by_sub_breed("hound\0".as_ptr() as *const i8, "afghan\0".as_ptr() as *const i8, &mut length);
+      let slice = slice::from_raw_parts(array, length);
+      for i in slice {
+        println!("{}", CStr::from_ptr(*i).to_str().unwrap());
+      }
+      dogapi_array_free(array, length);
+    }
+  }
+
+  #[test]
+  fn dogapi_multiple_random_images_test() {
+    unsafe {
+      let mut length = 0;
+      let array = dogapi_multiple_random_images(10, &mut length);
+      let slice = slice::from_raw_parts(array, length);
+      for i in slice {
+        println!("{}", CStr::from_ptr(*i).to_str().unwrap());
+      }
+      dogapi_array_free(array, length);
+    }
+  }
+
+  #[test]
+  fn dogapi_multiple_random_images_by_breed_test() {
+    unsafe {
+      let mut length = 0;
+      let array = dogapi_multiple_random_images_by_breed("hound\0".as_ptr() as *const i8, 10, &mut length);
+      let slice = slice::from_raw_parts(array, length);
+      for i in slice {
+        println!("{}", CStr::from_ptr(*i).to_str().unwrap());
+      }
+      dogapi_array_free(array, length);
+    }
+  }
+
+  #[test]
+  fn dogapi_multiple_random_images_by_sub_breed_test() {
+    unsafe {
+      let mut length = 0;
+      let array = dogapi_multiple_random_images_by_sub_breed("hound\0".as_ptr() as *const i8, "afghan\0".as_ptr() as *const i8, 10, &mut length);
+      let slice = slice::from_raw_parts(array, length);
+      for i in slice {
+        println!("{}", CStr::from_ptr(*i).to_str().unwrap());
+      }
+      dogapi_array_free(array, length);
+    }
+  }
+
+  #[test]
+  fn dogapi_random_image_test() {
+    unsafe {
+      let string = dogapi_random_image();
+      println!("{}", CStr::from_ptr(string).to_str().unwrap());
+      dogapi_string_free(string);
+    }
+  }
+
+  #[test]
+  fn dogapi_random_image_by_breed_test() {
+    unsafe {
+      let string = dogapi_random_image_by_breed("hound\0".as_ptr() as *const i8);
+      println!("{}", CStr::from_ptr(string).to_str().unwrap());
+      dogapi_string_free(string);
+    }
+  }
+
+  #[test]
+  fn dogapi_random_image_by_sub_breed_test() {
+    unsafe {
+      let string = dogapi_random_image_by_sub_breed("hound\0".as_ptr() as *const i8, "afghan\0".as_ptr() as *const i8);
+      println!("{}", CStr::from_ptr(string).to_str().unwrap());
+      dogapi_string_free(string);
+    }
+  }
+
+  #[test]
+  fn dogapi_sub_breeds_list_test() {
+    unsafe {
+      let mut length = 0;
+      let array = dogapi_sub_breeds_list("hound\0".as_ptr() as *const i8, &mut length);
+      let slice = slice::from_raw_parts(array, length);
+      for i in slice {
+        println!("{}", CStr::from_ptr(*i).to_str().unwrap());
+      }
+      dogapi_array_free(array, length);
+    }
+  }
+}

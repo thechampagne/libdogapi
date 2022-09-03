@@ -14,9 +14,17 @@ git clone https://github.com/thechampagne/libdogapi.git
 ```
 cd libdogapi
 ```
-#### 3. Build the project
+#### 3.1 Build the project
 ```
 cargo build
+```
+#### 3.2 Run tests
+```
+cargo test
+```
+#### 3.3 Run tests with output
+```
+cargo test -- --nocapture
 ```
 
 ### API
